@@ -50,7 +50,7 @@
                                 <a href="..">Introduction</a>
                             </li>
                             <li >
-                                <a href="../Analyse/">Annalyse</a>
+                                <a href="../Analyse/">Analyse</a>
                             </li>
                             <li class="active">
                                 <a href="./">Réalisation</a>
@@ -87,16 +87,89 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#realisation">Réalisation</a></li>
+            <li><a href="#choix-techniques">Choix techniques</a></li>
+            <li><a href="#presentation-de-certains-algorithmes-complexes-utilises">Présentation de certains algorithmes "complexes" utilisés</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="_1"></h1>
-<p>Réalisation</p>
-<p><strong>Choix techniques</strong></p>
-<p>Utilisation de deux tableaux pour stocker les pieces
-Utilisation d'un vecteur pour lister les pieces sur la trajectoire du pion</p>
-<p><strong>Présentation de certains algorithmes "complexes" utilisés</strong></p></div>
+<h1 id="realisation"><center>Réalisation</center></h1>
+<p><center>Les choix et méthodes employées</center></p>
+<p><br></p>
+<h2 id="choix-techniques">Choix techniques</h2>
+<ul>
+<li>Utilisation de deux tableaux pour stocker les pieces</li>
+<li>Utilisation d'un vecteur pour lister les pieces sur la trajectoire du pion</li>
+<li>Gestion visuelle des trajectoires</li>
+<li>Code peu fragmenté</li>
+</ul>
+<h2 id="presentation-de-certains-algorithmes-complexes-utilises">Présentation de certains algorithmes "complexes" utilisés</h2>
+<h3 id="algorithme-de-detection-de-pions-dans-une-trajectoire-diagonale">Algorithme de détection de pions dans une trajectoire diagonale</h3>
+<pre><code>if(Math.abs(xClicked-xPlay) == Math.abs(yClicked-yPlay)) {
+  System.out.println("Verif diag");
+  int pg = yClicked&gt;yPlay?yClicked:yPlay;
+  int pp = pg==yClicked?yPlay:yClicked;
+
+
+  int pp2 = pp==yClicked?xClicked:xPlay;
+
+  boolean plus = (xPlay&gt;=xClicked&amp;&amp;yPlay&gt;=yClicked) || ((xPlay&lt;xClicked&amp;&amp;yPlay&lt;yClicked));
+  int ikse;
+
+  for(int i=pp;i&lt;pg;i=i+100) {
+    ikse=plus?pp2+(i-pp):pp2-(i-pp);
+    for (int k=0; k&lt;8; k++)
+    {
+      if ((i+30==j2[k].posY &amp;&amp; ikse+30==j2[k].posX) || (i+30==j1[k].posY &amp;&amp; ikse+30==j1[k].posX &amp;&amp; k!=numpion)) {
+        System.out.println("Occupado diag "+i);
+
+        wrongPlace = true;
+        occupied = true;
+        break;
+      }
+      if(occupied)
+        break;
+
+    }
+  }
+}
+</code></pre>
+<p>On commence par regarder si les deux cases sont bien en diagonale l'une par rapport à l'autre :</p>
+<pre><code>if(Math.abs(xClicked-xPlay) == Math.abs(yClicked-yPlay))
+</code></pre>
+<p>Puis grâce aux opérateurs ternaires on identifie l'ordre de croissance des coordonnées x et y entre les deux cases :</p>
+<pre><code>int pg = yClicked&gt;yPlay?yClicked:yPlay; # plus grand y
+int pp = pg==yClicked?yPlay:yClicked; # plus petit y
+
+int pp2 = pp==yClicked?xClicked:xPlay; # plus petit x
+</code></pre>
+<p>On doit ensuite vérifier la direction de la diagonale, car la procédure fonctionne en augmentant par pas de 100 (largeur d'une case) la coordonnée y, pour avoir une diagonale il nous faut donc faire varier d'autant la coordonnée x. Pourça il nous faut savoir si quand y augmentant y le x croît ou décroît. En fonction de cette dernière information on saura comment faire varier x.</p>
+<pre><code>boolean plus = (xPlay&gt;=xClicked&amp;&amp;yPlay&gt;=yClicked) || ((xPlay&lt;xClicked&amp;&amp;yPlay&lt;yClicked));
+</code></pre>
+<p>Pour faire court on veut savoir si la case cliquée est soit :</p>
+<ul>
+<li>En haut a droite de l'autre case ou en bas à gauche. (=&gt; plus = false)</li>
+<li>En haut à gauche de l'autre case ou en bas à droite. (=&gt; plus = true)</li>
+</ul>
+<p>Maintenant qu'on sait de ou à ou va notre diagonale, dans quelle direction, dans quel sens et comment laparcourir, il nous reste simplement à la parcourir :</p>
+<pre><code>for(int i=pp;i&lt;pg;i=i+100) { # Pour chaque y sur la diagonale
+  ikse=plus?pp2+(i-pp):pp2-(i-pp); # On détermine son x associé
+  for (int k=0; k&lt;8; k++) # Et on teste si d'autres pions se trouvent la
+  {
+</code></pre>
+<p>Il nous reste plus qu'a tester concrétement si un autre pion est sur une de ces cases :</p>
+<pre><code>if ((i+30==j2[k].posY &amp;&amp; ikse+30==j2[k].posX) || (i+30==j1[k].posY &amp;&amp; ikse+30==j1[k].posX &amp;&amp; k!=numpion))
+</code></pre>
+<p>On parcourt donc les deux tableau de pions, en omettant de se vérifier soi-même, pour des raisons évidentes.</p>
+<p>Le reste n'est pas très intérréssant, on considère le mouvement comme impossible, il devient caduque et on va envoyer cette informaton au gestionnaire de l'interface pour encadrer cette case en rouge.</p>
+<pre><code>wrongPlace = true;
+occupied = true;
+break;
+}
+if(occupied)
+break;
+</code></pre></div>
         </div>
 
         <footer class="col-md-12">
