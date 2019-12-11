@@ -1,0 +1,9 @@
+site_name: M3105 - CHIGNARD Julien & DEMAISON Christel
+nav:
+- 'Introduction': 'index.md'
+- 'Annalyse': 'Analyse.md'
+- 'Réalisation': 'Realisation.md'
+- 'Utilisation': 'Utilisation.md'
+- 'Conclusion': 'Conclusion.md'
+theme: simplex
+extra_javascript: ["https://cdn.plot.ly/plotly-latest.min.js"]
